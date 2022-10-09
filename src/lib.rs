@@ -27,6 +27,12 @@ impl BibliothecaRfidReader {
         Ok(reader)
     }
 
+    #[cfg(not(windows))]
+    pub fn set_vid_pid(vid: u16, pid: u16) -> Result<(), ReaderError> {
+        libftd2xx::set_vid_pid(vid, pid)?;
+        Ok(())
+    }
+
     pub fn set_timeout(&mut self, timeout: Duration) {
         self.timeout = timeout;
     }

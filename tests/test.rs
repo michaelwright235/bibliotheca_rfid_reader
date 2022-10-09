@@ -2,6 +2,7 @@
 mod tests {
     use bibliotheca_rfid_reader::*;
     use libftd2xx::*;
+    
     #[test]
     fn inventory_and_read() {
         #[cfg(not(windows))]
