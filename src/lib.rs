@@ -31,8 +31,8 @@ impl BibliothecaRfidReader {
         self.timeout = timeout;
     }
 
-    pub fn timeout(&self) -> Duration {
-        self.timeout
+    pub fn timeout(&self) -> &Duration {
+        &self.timeout
     }
 
     fn prepare_reader(&mut self) -> Result<(), ReaderError> {
