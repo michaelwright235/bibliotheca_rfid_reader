@@ -137,7 +137,7 @@ impl BibliothecaRfidReader {
             return Err(ReaderError::NoCard);
         }
 
-        Ok(result[11..].to_vec())
+        Ok(result[12..].to_vec())
 
     }
 
