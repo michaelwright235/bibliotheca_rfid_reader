@@ -5,6 +5,7 @@ use std::time::Duration;
 use libftd2xx::{Ftdi, FtdiCommon, BitsPerWord, StopBits, Parity, FtStatus};
 use buffer::*;
 pub use error::*;
+pub use libftd2xx::DeviceInfo;
 pub struct BibliothecaRfidReader {
     handle: Ftdi,
     timeout: Duration
@@ -27,7 +28,7 @@ impl BibliothecaRfidReader {
         Ok(reader)
     }
 
-    #[cfg(not(windows))]
+    #[cfg(any(unix))]
     pub fn set_vid_pid(vid: u16, pid: u16) -> Result<(), ReaderError> {
         libftd2xx::set_vid_pid(vid, pid)?;
         Ok(())
@@ -69,11 +70,11 @@ impl BibliothecaRfidReader {
 
     fn write(&mut self, buffer: &[u8]) -> Result<(), FtStatus> {
         self.handle.write_all(buffer).unwrap();
-        print!("Wrote data: [ ");
-        for b in buffer {
-            print!("{b:#X} ");
-        }
-        println!("]");
+        // print!("Wrote data: [ ");
+        // for b in buffer {
+        //     print!("{b:#X} ");
+        // }
+        // println!("]");
         Ok(())
     }
     
@@ -85,11 +86,11 @@ impl BibliothecaRfidReader {
 
             let new_buf = Buffer::try_from(out_buffer).unwrap();
             
-            print!("Read data: [ ");
-            for b in new_buf.data().unwrap() {
-                print!("{b:#X} ");
-            }
-            println!("]");
+            // print!("Read data: [ ");
+            // for b in new_buf.data().unwrap() {
+            //     print!("{b:#X} ");
+            // }
+            // println!("]");
     
             return Ok(new_buf.data().unwrap().to_vec());
         }
@@ -172,6 +173,10 @@ impl BibliothecaRfidReader {
 
     pub fn custom_command(&mut self, buf: &[u8]) -> Result<Vec<u8>, ReaderError> {
         self.perform_command(buf)
+    }
+
+    pub fn ftdi_device_info(&mut self) -> Result<DeviceInfo, FtStatus> {
+        self.handle.device_info()
     }
 }
 
