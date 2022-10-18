@@ -6,6 +6,7 @@ use libftd2xx::{Ftdi, FtdiCommon, BitsPerWord, StopBits, Parity, FtStatus};
 use buffer::*;
 pub use error::*;
 pub use libftd2xx::DeviceInfo;
+
 pub struct BibliothecaRfidReader {
     handle: Ftdi,
     timeout: Duration
@@ -180,9 +181,8 @@ impl BibliothecaRfidReader {
     }
 }
 
-#[allow(unused_must_use)]
 impl Drop for BibliothecaRfidReader {
     fn drop(&mut self) {
-        self.handle.close();
+        let _ = self.handle.close();
     }
 }
