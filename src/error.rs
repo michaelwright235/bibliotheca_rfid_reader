@@ -1,10 +1,12 @@
 use std::{fmt::Display, error::Error};
 pub use libftd2xx::FtStatus;
+use libftd2xx::TimeoutError;
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum ReaderError {
     /// UsbError is returned if there was some kind of connection problem.
     UsbError(FtStatus),
+    TimeoutError(TimeoutError),
     WrongChecksum,
     WrongResponse,
     EmptyResponse,
@@ -17,6 +19,7 @@ impl Display for ReaderError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             ReaderError::UsbError(e) => f.write_str(e.to_string().as_str()),
+            ReaderError::TimeoutError(e) => f.write_str(e.to_string().as_str()),
             ReaderError::WrongChecksum => f.write_str("Wrong checksum in the response from the reader"),
             ReaderError::WrongResponse => f.write_str("Response cointains unrecognizable data"),
             ReaderError::EmptyResponse => f.write_str("Reader returned an empty response"),
@@ -30,6 +33,12 @@ impl Display for ReaderError {
 impl From<FtStatus> for ReaderError {
     fn from(e: FtStatus) -> Self {
         Self::UsbError(e)
+    }
+}
+
+impl From<TimeoutError> for ReaderError {
+    fn from(e: TimeoutError) -> Self {
+        Self::TimeoutError(e)
     }
 }
 

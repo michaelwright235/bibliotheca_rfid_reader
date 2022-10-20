@@ -69,8 +69,8 @@ impl BibliothecaRfidReader {
         self.read()
     }
 
-    fn write(&mut self, buffer: &[u8]) -> Result<(), FtStatus> {
-        self.handle.write_all(buffer).unwrap();
+    fn write(&mut self, buffer: &[u8]) -> Result<(), ReaderError> {
+        self.handle.write_all(buffer)?;
         // print!("Wrote data: [ ");
         // for b in buffer {
         //     print!("{b:#X} ");
@@ -85,15 +85,18 @@ impl BibliothecaRfidReader {
         if bytes > 0 {
             self.handle.read(&mut out_buffer[0..bytes])?;
 
-            let new_buf = Buffer::try_from(out_buffer).unwrap();
+            let new_buf = Buffer::try_from(out_buffer)?;
             
             // print!("Read data: [ ");
-            // for b in new_buf.data().unwrap() {
+            // for b in new_buf.data() {
             //     print!("{b:#X} ");
             // }
             // println!("]");
-    
-            return Ok(new_buf.data().unwrap().to_vec());
+
+            return match new_buf.data() {
+                Some(d) => Ok(d.to_vec()),
+                None => Err(ReaderError::WrongResponse)
+            }
         }
         Err(ReaderError::EmptyResponse)
     }
