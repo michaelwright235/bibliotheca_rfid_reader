@@ -1,6 +1,5 @@
 use std::{fmt::Display, error::Error};
-pub use libftd2xx::FtStatus;
-use libftd2xx::TimeoutError;
+pub use libftd2xx::{FtStatus, TimeoutError};
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum ReaderError {
