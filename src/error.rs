@@ -1,5 +1,5 @@
-use std::{fmt::Display, error::Error};
 pub use libftd2xx::{FtStatus, TimeoutError};
+use std::{error::Error, fmt::Display};
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum ReaderError {
@@ -11,7 +11,7 @@ pub enum ReaderError {
     EmptyResponse,
     WrongCardId,
     NotImplemented,
-    NoCard
+    NoCard,
 }
 
 impl Display for ReaderError {
@@ -19,12 +19,16 @@ impl Display for ReaderError {
         match self {
             ReaderError::UsbError(e) => f.write_str(e.to_string().as_str()),
             ReaderError::TimeoutError(e) => f.write_str(e.to_string().as_str()),
-            ReaderError::WrongChecksum => f.write_str("Wrong checksum in the response from the reader"),
+            ReaderError::WrongChecksum => {
+                f.write_str("Wrong checksum in the response from the reader")
+            }
             ReaderError::WrongResponse => f.write_str("Response cointains unrecognizable data"),
             ReaderError::EmptyResponse => f.write_str("Reader returned an empty response"),
-            ReaderError::WrongCardId => f.write_str("Wrong card id. Card id should contain exactly 8 bytes"),
+            ReaderError::WrongCardId => {
+                f.write_str("Wrong card id. Card id should contain exactly 8 bytes")
+            }
             ReaderError::NotImplemented => f.write_str("Not implemented yet"),
-            ReaderError::NoCard => f.write_str("No cards found")
+            ReaderError::NoCard => f.write_str("No cards found"),
         }
     }
 }
