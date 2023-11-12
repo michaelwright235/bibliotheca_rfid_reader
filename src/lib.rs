@@ -148,7 +148,18 @@ impl BibliothecaRfidReader {
             return Err(ReaderError::NoCard);
         }
 
-        Ok(result[12..].to_vec())
+        // getting rid of empty bytes at the end of card
+        let mut new_len = result.len();
+        for i in 0..(result.len()-1) {
+            if result[result.len()-1-i] == 0x00 {
+                new_len = result.len()-1-i;
+            } else {
+                break;
+            }
+        }
+        new_len -= 2;
+
+        Ok(result[12..new_len].to_vec())
 
     }
 
