@@ -2,7 +2,8 @@ mod buffer;
 mod error;
 
 use std::time::Duration;
-use libftd2xx::{Ftdi, FtdiCommon, BitsPerWord, StopBits, Parity, FtStatus};
+use libftd2xx::{Ftdi, FtdiCommon, BitsPerWord, StopBits, Parity};
+pub use libftd2xx::FtStatus;
 use buffer::*;
 pub use error::*;
 pub use libftd2xx::DeviceInfo;
@@ -24,12 +25,12 @@ impl BibliothecaRfidReader {
     }
 
     pub fn open_with_handle(handle: Ftdi) -> Result<Self, ReaderError> {
-        let mut reader = Self {handle: handle, timeout: Duration::from_millis(200)};
+        let mut reader = Self {handle, timeout: Duration::from_millis(200)};
         reader.prepare_reader()?;
         Ok(reader)
     }
 
-    #[cfg(any(unix))]
+    #[cfg(unix)]
     pub fn set_vid_pid(vid: u16, pid: u16) -> Result<(), ReaderError> {
         libftd2xx::set_vid_pid(vid, pid)?;
         Ok(())
@@ -170,11 +171,11 @@ impl BibliothecaRfidReader {
 
         let mut command = Buffer::new(0xd6);
         command.write(0x04);
-        command.write_all(&card_id);
+        command.write_all(card_id);
         command.write(0x00);
         command.write(0x09);
         command.write(0x00);
-        command.write_all(&data);
+        command.write_all(data);
         let zeros = [0; 8];
         command.write_all(&zeros);
 

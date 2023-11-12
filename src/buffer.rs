@@ -57,7 +57,7 @@ impl Buffer {
             return None;
         }
 
-        return if self.finalized == false {
+        if !self.finalized {
             Some(&self.buf[3..])
         } else {
             Some(&self.buf[3..self.buf.len()-2])
@@ -69,7 +69,7 @@ impl Buffer {
         let mut crc: u16 = 0xffff;
     
         for b in &buf[1..buf.len()] {
-            let mut current_byte = *b as u8;
+            let mut current_byte = *b;
             for _ in 0..8 {
                 let crc_old = crc as u32;
                 crc <<= 1;
